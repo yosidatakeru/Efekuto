@@ -266,13 +266,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		Novice::SetBlendMode(BlendMode::kBlendModeNormal);
 
-		if (bloodSplatter&& backgrroundcolor>100)
+		if ( backgrroundcolor>100)
 		{
 
 			for (int i = 0; i < BloodEffectMAX; i++)
 			{
 				Novice::DrawSprite(clingtoBloodPosx[i], clingtoBloodPosy[i], clingtoBlood[0], 5.0f, 5.0f, bloodRotate[i], 0xFF000080);
 			}
+			bloodSplatter = 0;
+
 		}
 		///
 		/// ↑描画処理ここまで
