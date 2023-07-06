@@ -2,6 +2,7 @@
 
 const char kWindowTitle[] = "LE2B_ヨシダ_タケル";
 const int MAX = 50;//パーティクルの最大
+const int BloodEffectMAX = 12;
     int posx[MAX];
 	int posy[MAX];
 	int speedx[MAX];
@@ -15,7 +16,9 @@ const int MAX = 50;//パーティクルの最大
 	int minY = 8;
 	int maxY = 16;
 	
-
+	int clingtoBloodPosx[BloodEffectMAX];
+	int clingtoBloodPosy[BloodEffectMAX];
+	float bloodRotate[BloodEffectMAX];
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
@@ -38,6 +41,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	 attackTexture[1] = Novice::LoadTexture("./ataku3.png");
 	 attackTexture[2] = Novice::LoadTexture("./ataku4.png");
 	 attackTexture[3] = Novice::LoadTexture("./ataku5.png");
+	 int clingtoBlood[2];
+	 clingtoBlood[0] = Novice::LoadTexture("./blood3.png");
+	 clingtoBlood[1] = Novice::LoadTexture("./blood2.png");
 	int damageAnimation = 0;
 	int attackAnimation = 0;
 	int attackReset = 0;
@@ -48,7 +54,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int enemyposy = 400;
 	int bloodposx = 620;
 	int bloodSplatter = 0;
+	int backgrroundcolor = 0;
 	
+
+
+
 
 	for (int i = 0; i < MAX; i++)
 	{
@@ -60,6 +70,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		gravity[i] = 1;
 		bloodEffect[i] = 0;
 	}
+
+
+	for (int i = 0; i < BloodEffectMAX; i++)
+	{
+		 clingtoBloodPosx[i]=300;
+		 clingtoBloodPosy[i]=200;
+		 if (i > 4 && i<8)
+		 {
+			 clingtoBloodPosx[i] = 0;
+			 clingtoBloodPosy[i] = 0;
+		 }
+
+		 if (i > 8 && i < 12)
+		 {
+			 clingtoBloodPosx[i] = 600;
+			 clingtoBloodPosy[i] = 0;
+		 }
+	}
+	
 	
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
@@ -97,9 +126,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 	
-		
+		//血しぶき
 		if (bloodSplatter)
 		{
+			backgrroundcolor++;
 			for (int i = 0; i < MAX; i++)
 			{
 				if (flag[i] == 0)
@@ -126,8 +156,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 		}
-	
-
+	//ここまで
+		
+		
 		///
 		/// ↑更新処理ここまで
 		///
@@ -138,6 +169,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//背景
 		
 		Novice::DrawSprite(0, 0, background, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+		Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0x00000040, kFillModeSolid);
 		//敵
 		Novice::DrawSprite(enemyposx, enemyposy, enemyTexture[0], 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 		//エフェクト開始
@@ -227,6 +259,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					Novice::DrawEllipse(posx[i], posy[i], 3, 3, 0.0f, 0xFF0000FF, kFillModeSolid);
 				}
 
+			}
+		}
+		//血液
+	
+		
+		Novice::SetBlendMode(BlendMode::kBlendModeNormal);
+
+		if (bloodSplatter&& backgrroundcolor>100)
+		{
+
+			for (int i = 0; i < BloodEffectMAX; i++)
+			{
+				Novice::DrawSprite(clingtoBloodPosx[i], clingtoBloodPosy[i], clingtoBlood[0], 5.0f, 5.0f, bloodRotate[i], 0xFF000080);
 			}
 		}
 		///
